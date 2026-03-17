@@ -102,10 +102,17 @@ class ShopPlanController extends Controller
 
             $shopPlan->items()->insert($itemsData);
 
-            return redirect()->route('list')->with('success', 'Shop Plan Created Successfully');
+            // return redirect()->route('list')->with('success', 'Shop Plan Created Successfully');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Shop Plan Created Successfully'
+            ], 200);
         }
 
-        return redirect()->back()->with('error', 'Failed to create Shop Plan');
+        return response()->json([
+            'status' => 'error', 
+            'message' => 'Failed to create Shop Plan'
+        ], 500);
     }
 
     /**

@@ -4,7 +4,7 @@
 @endpush
 @section('content')
     <x-layout>
-        <form action="{{ route('plan.store') }}" method="POST">
+        <form id="storePlanForm" action="{{ route('plan.store') }}" method="POST">
             @csrf
             <div class="plan-header">
                 <div class="title-wrapper static md:sticky top-6 main-text">
@@ -95,7 +95,7 @@
             $('.items-plan-wrapper').append(clone);
             if (!submitButtonEl) {
                 const submitBtn = $('<button type="submit">Create Plan</button>').attr({
-                    class: 'bg-accent primary-action-btn w-5/6 md:w-40 rounded-xl fixed bottom-0 mb-6 self-center md:self-start'
+                    class: 'bg-accent primary-action-btn w-5/6 md:w-40 rounded-xl fixed bottom-0 mb-6 self-center md:self-start disabled:opacity-50'
                 });
 
                 
@@ -141,6 +141,49 @@
         $('input[name="budget"]').on('input', function() {
             let val = $(this).val();
             $('input[name="budget"]').val(val);
+        });
+
+        $(document).on('submit', '#storePlanForm', function(e) {
+            e.preventDefault();
+            const formData = new FormData($(this)[0]);
+            $('button[type="submit"]').attr('disabled', true);
+            
+            $.ajax({
+                url: '{{ route("plan.store") }}',
+                type: 'POST',
+                data: formData,
+                processContent: false,
+                success: function(response) {
+                    console.log('response', response);
+                    if (response.status == 'success') {
+                        toastr.success(response.message);
+                        setTimeout(() => {
+                            window.location.href = @json(route('list'));
+                        }, 1500);
+                    } else {
+                        $('button[type="submit"]').attr('disabled', false);
+                    }
+                },
+                error: function(xhr) {
+                    console.error('error', xhr.responseJSON);
+                    $('button[type="submit"]').attr('disabled', false);
+                    
+                    const errors = xhr.responseJSON?.errors;
+                    const message = xhr.responseJSON?.message;
+
+                    if (Object.keys(errors).length > 0) {
+                        const uniqueErrors = [
+                            ...new Set(Object.values(errors).flat())
+                        ].reverse();
+
+                        uniqueErrors.forEach(item => {
+                            toastr.error(item);
+                        });
+                    } else if (message) {
+                        toastr.error(message);
+                    }
+                }
+            });
         });
     </script>
 @endpush
