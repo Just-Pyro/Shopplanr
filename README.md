@@ -141,6 +141,7 @@ shopplanr-blade/
 
 - [ShopPlanr — Expo Mobile](https://github.com/Just-Pyro/shopplanr-expo101)
 - [ShopPlanr — React Web](https://github.com/Just-Pyro/ShopPlanr-web)
+- [ShopPlanr — React Web(TS)](https://github.com/Just-Pyro/ShopPlanr-ts)
 
 ---
 
